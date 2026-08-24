@@ -43,3 +43,29 @@ GREEN CHECK: PASS
 ## Notes
 
 Model generation runs synchronously on CPU and blocks while generating. Concurrency is intentionally not handled in this week-2 implementation.
+
+## Verify
+
+From the project folder:
+
+```bash
+python verify.py
+```
+
+### Verification Result
+
+```text
+model: Qwen/Qwen2.5-0.5B-Instruct
+completion content: 'Hello.'
+usage: {'prompt_tokens': 35, 'completion_tokens': 3, 'total_tokens': 38}
+streaming: not implemented (optional this week)
+GREEN CHECK: PASS
+```
+
+## Model
+
+`Qwen/Qwen2.5-0.5B-Instruct`
+
+## Notes
+
+Model generation runs synchronously on CPU and blocks while generating. Concurrency is intentionally not handled in this week-2 implementation.

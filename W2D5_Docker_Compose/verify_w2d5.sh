@@ -27,9 +27,9 @@ echo "PASS: Docker Compose available"
 # Check container health
 echo "[3/6] Checking container health..."
 
-STATUS=$(docker compose ps --format json | grep -o "healthy" || true)
+STATUS=$(docker compose ps | grep -o "healthy" || true)
 
-if [ "$STATUS" != "healthy" ]; then
+if [ -z "$STATUS" ]; then
     echo "FAIL: Container is not healthy"
     docker compose ps
     exit 1

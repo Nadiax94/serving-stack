@@ -2,6 +2,9 @@
 
 ## Labs Completed
 
+### W2D1 - GPU Memory Measurement
+Measured Qwen model memory usage on Colab T4 using fp16, int8 and int4 precision.
+
 ### W2D2 - Model Serving API
 FastAPI OpenAI-compatible serving endpoint.
 

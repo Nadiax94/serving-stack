@@ -1,173 +1,166 @@
-# W2D5 Docker Compose - Execution Steps
-
-## Project
-Repository:
-Nadiax94/serving-stack
-
-## Objective
-
-Move from manual docker run to Docker Compose deployment.
-
-The service should run using:
-- compose.yaml
-- .env configuration
-- model cache volume
-- healthcheck
-- API authentication
+W2D5 Docker Compose Deployment – Evidence Steps
 
 
-# 1. Environment Setup
+Step 1 — Build Final Docker Image (CPU-v4)
 
-Create .env file:
+<img width="1148" height="470" alt="image" src="https://github.com/user-attachments/assets/3e50fdf2-83e4-4748-9de3-fccb1aada823" />
 
-IMAGE=nadiax/aidc-serving:cpu-v4
-MODEL_ID=Qwen/Qwen2.5-0.5B-Instruct
-HOST_PORT=8000
-API_KEY=mysecretkey123
-MAX_TOKENS=64
+Command executed:
 
+docker build -t nadiax/aidc-serving:cpu-v4 .
 
-# 2. Docker Compose Configuration
+Evidence:
 
-Create compose.yaml.
-
-Services:
-- serving
-
-Configuration:
-- Image from registry
-- Port mapping
-- Environment variables
-- HuggingFace cache volume
-- Restart policy
-- Healthcheck
+Docker image built successfully.
+Final image created:
+nadiax/aidc-serving:cpu-v4
 
 
-# 3. Start Service
+Step 2 — Verify Docker Image Availability
 
-Run:
+<img width="892" height="47" alt="image" src="https://github.com/user-attachments/assets/942c0aca-39bb-496b-ae76-440d3a938534" />
+
+docker images | grep cpu-v4
+
+Evidence Result:
+
+nadiax/aidc-serving:cpu-v4
+
+Image size:
+
+1.61GB
+
+
+
+Step 3 — Deploy Application Using Docker Compose
+
+
+Description:
+Stopped the previous container and started the service using Docker Compose.
+
+Commands executed:
+
+docker compose down
+
+Then:
 
 docker compose up -d
 
+Evidence:
 
-Check status:
+Network created successfully.
+Container started successfully.
+
+Container:
+
+serving-stack-serving-1
+
+Step 4 — Verify Container Health Status
+
+Description:
+Checked that the service is running correctly and passed the health check.
+
+Command executed:
 
 docker compose ps
 
+Expected Result:
 
-Expected:
+STATUS: Up (healthy)
 
+Evidence:
+
+IMAGE: nadiax/aidc-serving:cpu-v4
 STATUS: healthy
+PORT: 8000
 
+Step 5 — Test API Authentication Without API Key
 
-# 4. Test Health Endpoint
+Description:
+Verified that /v1/models endpoint rejects unauthorized requests.
 
-Run:
+Command executed:
 
-curl http://localhost:8000/health
+curl -s -o /dev/null -w "%{http_code}\n" \
+http://localhost:8000/v1/models
 
+Expected Result:
 
-Expected:
+401
 
-HTTP 200
+Evidence:
 
+Unauthorized request correctly blocked.
 
-# 5. Test Model Endpoint
+Step 6 — Test API Authentication With API Key
 
-Without API Key:
+Description:
+Verified that authorized requests are accepted.
 
-curl http://localhost:8000/v1/models
+Command executed:
 
-
-Expected:
-
-401 Unauthorized
-
-
-With API Key:
-
-curl \
+curl -s -o /dev/null -w "%{http_code}\n" \
 -H "Authorization: Bearer mysecretkey123" \
 http://localhost:8000/v1/models
 
+Expected Result:
 
-Expected:
+200
+
+Evidence:
+
+Authorized request successfully returned:
 
 200 OK
 
 
-# 6. Test Chat Completion
+Step 7 — Verify Health Endpoint
 
-Run:
+Description:
+Confirmed that the health endpoint remains publicly accessible.
 
-curl http://localhost:8000/v1/chat/completions \
--H "Authorization: Bearer mysecretkey123" \
--H "Content-Type: application/json" \
--d '{"model":"Qwen/Qwen2.5-0.5B-Instruct","messages":[{"role":"user","content":"Say hi"}],"max_tokens":8}'
+Command executed:
 
+curl -s -o /dev/null -w "%{http_code}\n" \
+http://localhost:8000/health
 
-Expected:
+Expected Result:
 
-chat.completion response
+200
 
+Evidence:
 
-# 7. Docker Image Versions
+Health endpoint returned successfully.
 
-cpu-v1:
-Original CPU image
-
-cpu-v2:
-Added environment configuration
-
-cpu-v3:
-Added API Key middleware
-
-cpu-v4:
-Final working version
+<img width="1170" height="408" alt="image" src="https://github.com/user-attachments/assets/721c9ba2-a493-4e7c-b951-8d37dfc67b7a" />
 
 
-# 8. Final Verification
+Step 8 — Run Automated Verification Script
 
-Run:
+Description:
+Executed the custom W2D5 verification script.
 
-docker compose ps
+Command executed:
 
-Verify:
+./verify_w2d5.sh
 
-- Container healthy
-- API available
-- Authentication working
+Verification checks:
 
+Required files exist
+Docker Compose available
+Container health
+API availability
 
-# 9. GitHub Upload
+Evidence:
 
-Check changes:
+Verification started successfully.
+<img width="590" height="308" alt="image" src="https://github.com/user-attachments/assets/32294763-d686-4fb5-bee6-e595fe6520c6" />
 
-git status
+Final Status
 
-
-Add files:
-
-git add .
-
-
-Commit:
-
-git commit -m "Complete W2D5 Docker Compose deployment and API authentication"
-
-
-Push:
-
-git push origin main
-
-
-# Final Result
-
-W2D5 Completed Successfully
-
-PASS:
-- Docker Compose
-- Healthcheck
-- Model Serving
-- API Authentication
-- GitHub Upload
+✅ Docker Compose Deployment Completed
+✅ CPU-v4 Image Built
+✅ Container Healthy
+✅ API Key Authentication Enabled
+✅ Health Endpoint Working
+✅ GitHub Repository Updated
